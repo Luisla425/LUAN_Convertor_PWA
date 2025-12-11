@@ -1,2 +1,2 @@
 # LUAN_Convertor_PWA
-Convertor de tasas de Monedas para vzla
+Convertor De Tasas De Monedas En Vzla.
