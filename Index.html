@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Epic Converter - Conversor de monedas venezolano profesional">
+  <meta name="theme-color" content="#C9975B">
+  
+  <title>Epic Converter | LUANSysten™</title>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- Header con logo -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo-container">
+        <img src="icons/icon-192.png" alt="LUANSysten Logo" class="logo">
+        <div class="brand">
+          <h1 class="title">Epic Converter⚡</h1>
+          <p class="subtitle">by LUANSysten™</p>
+        </div>
+      </div>
+      <p class="tagline">Convierte cualquier moneda en tiempo real</p>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- Estado de APIs -->
+    <div id="apiStatus" class="api-status hidden">
+      <span class="status-icon">⚠️</span>
+      <span class="status-text">APIs no disponibles - Usando tasas manuales</span>
+    </div>
+
+    <!-- Card principal de conversión -->
+    <div class="card main-card">
+      <div class="card-header">
+        <h2>Conversor Universal</h2>
+        <button id="refreshBtn" class="icon-btn" title="Actualizar tasas">
+          🔄
+        </button>
+      </div>
+
+      <!-- Input de monto -->
+      <div class="input-group">
+        <label for="amount">Monto</label>
+        <div class="input-wrapper">
+          <input 
+            type="number" 
+            id="amount" 
+            placeholder="0.00" 
+            step="0.01"
+            autocomplete="off"
+          >
+          <button id="clearBtn" class="clear-btn" title="Limpiar">✕</button>
+        </div>
+        <!-- Botones rápidos -->
+        <div class="quick-btns">
+          <button class="quick-btn" data-value="10">+10</button>
+          <button class="quick-btn" data-value="50">+50</button>
+          <button class="quick-btn" data-value="100">+100</button>
+        </div>
+      </div>
+
+      <!-- Selectores de moneda -->
+      <div class="currency-selectors">
+        <div class="input-group">
+          <label for="fromCurrency">De</label>
+          <select id="fromCurrency">
+            <option value="USD">🇺🇸 USD (BCV)</option>
+            <option value="EUR">🇪🇺 EUR</option>
+            <option value="PAR">💵 USD (Paralelo)</option>
+            <option value="BS" selected>🇻🇪 Bolívares</option>
+          </select>
+        </div>
+
+        <!-- Botón swap -->
+        <button id="swapBtn" class="swap-btn" title="Intercambiar monedas">
+          ⇄
+        </button>
+
+        <div class="input-group">
+          <label for="toCurrency">A</label>
+          <select id="toCurrency">
+            <option value="USD" selected>🇺🇸 USD (BCV)</option>
+            <option value="EUR">🇪🇺 EUR</option>
+            <option value="PAR">💵 USD (Paralelo)</option>
+            <option value="BS">🇻🇪 Bolívares</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Botón convertir -->
+      <button id="convertBtn" class="btn btn-primary">
+        <span class="btn-text">Convertir</span>
+        <span class="btn-icon">💱</span>
+      </button>
+
+      <!-- Resultado -->
+      <div id="result" class="result hidden">
+        <div class="result-label">Resultado:</div>
+        <div class="result-value">0.00</div>
+        <button id="copyBtn" class="btn-copy" title="Copiar resultado">
+          📋 Copiar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tasas actuales -->
+    <div class="card rates-card">
+      <div class="card-header">
+        <h3>Tasas Actuales</h3>
+        <span id="lastUpdate" class="update-time">Cargando...</span>
+      </div>
+      <div class="rates-grid">
+        <div class="rate-item">
+          <span class="rate-label">🇺🇸 USD (BCV)</span>
+          <span id="usdRate" class="rate-value">--</span>
+        </div>
+        <div class="rate-item">
+          <span class="rate-label">🇪🇺 EUR</span>
+          <span id="eurRate" class="rate-value">--</span>
+        </div>
+        <div class="rate-item">
+          <span class="rate-label">💵 USD (Paralelo)</span>
+          <span id="parRate" class="rate-value">--</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Override manual -->
+    <div class="card override-card">
+      <div class="card-header">
+        <h3>Tasas Manuales</h3>
+        <label class="switch">
+          <input type="checkbox" id="manualToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div id="manualInputs" class="manual-inputs hidden">
+        <div class="input-group">
+          <label for="usdManual">USD (BCV)</label>
+          <input type="number" id="usdManual" placeholder="Ej: 56.50" step="0.01">
+        </div>
+        <div class="input-group">
+          <label for="eurManual">EUR</label>
+          <input type="number" id="eurManual" placeholder="Ej: 61.20" step="0.01">
+        </div>
+        <div class="input-group">
+          <label for="parManual">USD (Paralelo)</label>
+          <input type="number" id="parManual" placeholder="Ej: 58.00" step="0.01">
+        </div>
+        <button id="saveManualBtn" class="btn btn-secondary">
+          Guardar Tasas
+        </button>
+      </div>
+    </div>
+
+    <!-- Historial -->
+    <div class="card history-card">
+      <div class="card-header">
+        <h3>Historial</h3>
+        <div class="history-actions">
+          <button id="exportBtn" class="icon-btn" title="Exportar CSV">
+            📥 CSV
+          </button>
+          <button id="clearHistoryBtn" class="icon-btn" title="Limpiar historial">
+            🗑️
+          </button>
+        </div>
+      </div>
+      <ul id="historyList" class="history-list">
+        <li class="empty-state">No hay conversiones recientes</li>
+      </ul>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>
+      <strong>Made with 🔥 by LUANSysten™</strong><br>
+      <span class="footer-text">El conversor más épico de Venezuela</span>
+    </p>
+  </footer>
+
+  <!-- Modal de fallback manual -->
+  <div id="fallbackModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>⚠️ APIs No Disponibles</h3>
+        <p>Las APIs de tasas no están respondiendo. Ingresa las tasas manualmente para continuar:</p>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label for="fallbackUSD">Tasa USD (BCV)</label>
+          <input type="number" id="fallbackUSD" placeholder="Ej: 56.50" step="0.01" required>
+        </div>
+        <div class="input-group">
+          <label for="fallbackEUR">Tasa EUR</label>
+          <input type="number" id="fallbackEUR" placeholder="Ej: 61.20" step="0.01" required>
+        </div>
+        <div class="input-group">
+          <label for="fallbackPAR">Tasa USD Paralelo</label>
+          <input type="number" id="fallbackPAR" placeholder="Ej: 58.00" step="0.01" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveFallbackBtn" class="btn btn-primary">
+          Guardar y Continuar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
