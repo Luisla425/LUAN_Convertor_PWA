@@ -1,93 +1,78 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Epic Converter - Conversor de monedas venezolano profesional">
-  <meta name="theme-color" content="#C9975B">
-  
-  <title>Epic Converter | LUANSysten™</title>
-  
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
-  <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css">
-</head>
+<!DOCTYPE html>  <html lang="es">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <meta name="description" content="Epic Converter - Conversor de monedas venezolano profesional">  
+  <meta name="theme-color" content="#C9975B">    <title>Epic Converter | LUANSysten™</title>    <!-- PWA -->    <link rel="manifest" href="manifest.json">  
+  <link rel="icon" href="icons/icon-192.png">  
+  <link rel="apple-touch-icon" href="icons/icon-192.png">  
+  <meta name="apple-mobile-web-app-capable" content="yes">  
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">    <!-- Estilos -->    <link rel="stylesheet" href="styles.css">  
+</head>  <body>  
+  <!-- Header con logo -->  
+  <header class="header">  
+    <div class="header-content">  
+      <div class="logo-container">  
+        <img src="icons/icon-192.png" alt="LUANSysten Logo" class="logo">  
+        <div class="brand">  
+          <h1 class="title">Epic Converter⚡</h1>  
+          <p class="subtitle">by LUANSysten™</p>  
+        </div>  
+      </div>  
+      <p class="tagline">Convierte cualquier moneda en tiempo real</p>  
+    </div>  
+  </header>    <main class="container">  <!-- Estado de APIs -->  
+<div id="apiStatus" class="api-status hidden">  
+  <span class="status-icon">⚠️</span>  
+  <span class="status-text">APIs no disponibles - Usando tasas manuales</span>  
+</div>  
 
-<body>
-  <!-- Header con logo -->
-  <header class="header">
-    <div class="header-content">
-      <div class="logo-container">
-        <img src="icons/icon-192.png" alt="LUANSysten Logo" class="logo">
-        <div class="brand">
-          <h1 class="title">Epic Converter⚡</h1>
-          <p class="subtitle">by LUANSysten™</p>
-        </div>
-      </div>
-      <p class="tagline">Convierte cualquier moneda en tiempo real</p>
-    </div>
-  </header>
+<!-- Card principal de conversión -->  
+<div class="card main-card">  
+  <div class="card-header">  
+    <h2>Conversor Universal</h2>  
+    <button id="refreshBtn" class="icon-btn" title="Actualizar tasas">  
+      🔄  
+    </button>  
+  </div>  
 
-  <main class="container">
-    
-    <!-- Estado de APIs -->
-    <div id="apiStatus" class="api-status hidden">
-      <span class="status-icon">⚠️</span>
-      <span class="status-text">APIs no disponibles - Usando tasas manuales</span>
-    </div>
+  <!-- Input de monto -->  
+  <div class="input-group">  
+    <label for="amount">Monto</label>  
+    <div class="input-wrapper">  
+      <input  
+        type="number"  
+        id="amount"  
+        placeholder="0.00"  
+        step="0.01"  
+        autocomplete="off"  
+      >  
+      <button id="clearBtn" class="clear-btn" title="Limpiar">✕</button>  
+    </div>  
+    <!-- Botones rápidos -->  
+    <div class="quick-btns">  
+      <button class="quick-btn" data-value="10">+10</button>  
+      <button class="quick-btn" data-value="50">+50</button>  
+      <button class="quick-btn" data-value="100">+100</button>  
+    </div>  
+  </div>  
 
-    <!-- Card principal de conversión -->
-    <div class="card main-card">
-      <div class="card-header">
-        <h2>Conversor Universal</h2>
-        <button id="refreshBtn" class="icon-btn" title="Actualizar tasas">
-          🔄
-        </button>
-      </div>
+  <!-- Selectores de moneda -->  
+  <div class="currency-selectors">  
+    <div class="input-group">  
+      <label for="fromCurrency">De</label>  
+      <select id="fromCurrency">  
+        <option value="USD">🇺🇸 USD (BCV)</option>  
+        <option value="EUR">🇪🇺 EUR</option>  
+        <option value="PAR">💵 USD (Paralelo)</option>  
+        <option value="BS" selected>🇻🇪 Bolívares</option>  
+      </select>  
+    </div>  
 
-      <!-- Input de monto -->
-      <div class="input-group">
-        <label for="amount">Monto</label>
-        <div class="input-wrapper">
-          <input 
-            type="number" 
-            id="amount" 
-            placeholder="0.00" 
-            step="0.01"
-            autocomplete="off"
-          >
-          <button id="clearBtn" class="clear-btn" title="Limpiar">✕</button>
-        </div>
-        <!-- Botones rápidos -->
-        <div class="quick-btns">
-          <button class="quick-btn" data-value="10">+10</button>
-          <button class="quick-btn" data-value="50">+50</button>
-          <button class="quick-btn" data-value="100">+100</button>
-        </div>
-      </div>
-
-      <!-- Selectores de moneda -->
-      <div class="currency-selectors">
-        <div class="input-group">
-          <label for="fromCurrency">De</label>
-          <select id="fromCurrency">
-            <option value="USD">🇺🇸 USD (BCV)</option>
-            <option value="EUR">🇪🇺 EUR</option>
-            <option value="PAR">💵 USD (Paralelo)</option>
-            <option value="BS" selected>🇻🇪 Bolívares</option>
-          </select>
-        </div>
-
-        <!-- Botón swap -->
-        <button id="swapBtn" class="swap-btn" title="Intercambiar monedas">
-          ⇄
-        </button>
+    <!-- Botón swap -->  
+    <button id="swapBtn" class="swap-btn" title="Intercambiar monedas">  
+      ⇄  
+    </button>
 
         <div class="input-group">
           <label for="toCurrency">A</label>
@@ -227,3 +212,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+<!-- redeploy -->
