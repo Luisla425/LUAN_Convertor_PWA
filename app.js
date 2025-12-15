@@ -5,7 +5,9 @@
 
 // ============ CONFIGURATION ============
 const CONFIG = {
-  API_URL: 'https://ve.dolarapi.com/v1/dolares',
+  API_DOLARES: 'https://ve.dolarapi.com/v1/dolares',
+  API_PARAL: 'https://ve.dolarapi.com/v1/dolares/paralelo',
+  API_EUR: 'https://api.exchangerate-api.com/v4/latest/EUR',
   CACHE_KEY: 'vcpro_cache_v3',
   REFRESH_INTERVAL: 5 * 60 * 1000, // 5 minutes
   ALERT_THRESHOLD: 2, // Alert if rate changes more than 2 Bs
@@ -366,29 +368,57 @@ async function fetchRates() {
   setStatus('🔄 Actualizando tasas...');
   
   try {
-    const response = await fetch(CONFIG.API_URL, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
+    // Fetch todas las APIs en paralelo
+    const [responseOficial, responseParalelo, responseEUR] = await Promise.all([
+      fetch(CONFIG.API_DOLARES),
+      fetch(CONFIG.API_PARAL),
+      fetch(CONFIG.API_EUR)
+    ]);
     
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    // Verificar que todas respondieron OK
+    if (!responseOficial.ok || !responseParalelo.ok || !responseEUR.ok) {
+      throw new Error('Una o más APIs fallaron');
     }
     
-    const data = await response.json();
+    // Parsear respuestas
+    const dataOficial = await responseOficial.json();
+    const dataParalelo = await responseParalelo.json();
+    const dataEUR = await responseEUR.json();
     
-    // Parse rates from API
-    const bcvItem = data.find(item => item.source && item.source.toLowerCase().includes('bcv'));
-    const eurItem = data.find(item => item.title && item.title.toLowerCase().includes('eur'));
-    const parItem = data.find(item => 
-      (item.source && item.source.toLowerCase().includes('enparalelovzla')) ||
-      (item.title && item.title.toLowerCase().includes('paralelo'))
-    );
+    // Extraer USD BCV (Oficial)
+    let usdBcv = null;
+    if (Array.isArray(dataOficial)) {
+      const oficialItem = dataOficial.find(item => 
+        item.fuente && item.fuente.toLowerCase() === 'oficial'
+      );
+      usdBcv = oficialItem ? oficialItem.promedio : null;
+    } else if (dataOficial.promedio) {
+      usdBcv = dataOficial.promedio;
+    }
+    
+    // Extraer USD Paralelo
+    let usdPar = null;
+    if (dataParalelo.promedio) {
+      usdPar = dataParalelo.promedio;
+    } else if (Array.isArray(dataParalelo)) {
+      const parItem = dataParalelo.find(item => 
+        item.fuente && item.fuente.toLowerCase() === 'paralelo'
+      );
+      usdPar = parItem ? parItem.promedio : null;
+    }
+    
+    // Calcular EUR en Bs
+    // La API retorna EUR/USD, necesitamos multiplicar por USD_BCV
+    let eur = null;
+    if (dataEUR.rates && dataEUR.rates.USD && usdBcv) {
+      const eurToUsd = dataEUR.rates.USD; // Ej: 1.05 (1 EUR = 1.05 USD)
+      eur = usdBcv * eurToUsd; // EUR en Bs
+    }
     
     const newRates = {
-      usdBcv: bcvItem ? bcvItem.promedio : null,
-      eur: eurItem ? eurItem.promedio : null,
-      usdPar: parItem ? parItem.promedio : null
+      usdBcv: usdBcv,
+      eur: eur,
+      usdPar: usdPar
     };
     
     // Check for rate changes (alerts)
