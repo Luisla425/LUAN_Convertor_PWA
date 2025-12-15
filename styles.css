@@ -1129,3 +1129,15 @@ select:focus-visible {
     box-shadow: none;
   }
 }
+
+/* FIX: Gráfico de Tendencias - Altura Controlada */
+.rate-trend canvas {
+  max-height: 120px !important;
+  height: 120px !important;
+}
+
+#trendChart {
+  max-height: 120px !important;
+  height: 120px !important;
+}
+
