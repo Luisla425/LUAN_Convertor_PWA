@@ -1,215 +1,412 @@
-<!DOCTYPE html>  <html lang="es">  
-<head>  
-  <meta charset="UTF-8">  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-  <meta name="description" content="Epic Converter - Conversor de monedas venezolano profesional">  
-  <meta name="theme-color" content="#C9975B">    <title>Epic Converter | LUANSysten™</title>    <!-- PWA -->    <link rel="manifest" href="manifest.json">  
-  <link rel="icon" href="icons/icon-192.png">  
-  <link rel="apple-touch-icon" href="icons/icon-192.png">  
-  <meta name="apple-mobile-web-app-capable" content="yes">  
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">    <!-- Estilos -->    <link rel="stylesheet" href="styles.css">  
-</head>  <body>  
-  <!-- Header con logo -->  
-  <header class="header">  
-    <div class="header-content">  
-      <div class="logo-container">  
-        <img src="icons/icon-192.png" alt="LUANSysten Logo" class="logo">  
-        <div class="brand">  
-          <h1 class="title">Epic Converter⚡</h1>  
-          <p class="subtitle">by LUANSysten™</p>  
-        </div>  
-      </div>  
-      <p class="tagline">Convierte cualquier moneda en tiempo real</p>  
-    </div>  
-  </header>    <main class="container">  <!-- Estado de APIs -->  
-<div id="apiStatus" class="api-status hidden">  
-  <span class="status-icon">⚠️</span>  
-  <span class="status-text">APIs no disponibles - Usando tasas manuales</span>  
-</div>  
-
-<!-- Card principal de conversión -->  
-<div class="card main-card">  
-  <div class="card-header">  
-    <h2>Conversor Universal</h2>  
-    <button id="refreshBtn" class="icon-btn" title="Actualizar tasas">  
-      🔄  
-    </button>  
-  </div>  
-
-  <!-- Input de monto -->  
-  <div class="input-group">  
-    <label for="amount">Monto</label>  
-    <div class="input-wrapper">  
-      <input  
-        type="number"  
-        id="amount"  
-        placeholder="0.00"  
-        step="0.01"  
-        autocomplete="off"  
-      >  
-      <button id="clearBtn" class="clear-btn" title="Limpiar">✕</button>  
-    </div>  
-    <!-- Botones rápidos -->  
-    <div class="quick-btns">  
-      <button class="quick-btn" data-value="10">+10</button>  
-      <button class="quick-btn" data-value="50">+50</button>  
-      <button class="quick-btn" data-value="100">+100</button>  
-    </div>  
-  </div>  
-
-  <!-- Selectores de moneda -->  
-  <div class="currency-selectors">  
-    <div class="input-group">  
-      <label for="fromCurrency">De</label>  
-      <select id="fromCurrency">  
-        <option value="USD">🇺🇸 USD (BCV)</option>  
-        <option value="EUR">🇪🇺 EUR</option>  
-        <option value="PAR">💵 USD (Paralelo)</option>  
-        <option value="BS" selected>🇻🇪 Bolívares</option>  
-      </select>  
-    </div>  
-
-    <!-- Botón swap -->  
-    <button id="swapBtn" class="swap-btn" title="Intercambiar monedas">  
-      ⇄  
-    </button>
-
-        <div class="input-group">
-          <label for="toCurrency">A</label>
-          <select id="toCurrency">
-            <option value="USD" selected>🇺🇸 USD (BCV)</option>
-            <option value="EUR">🇪🇺 EUR</option>
-            <option value="PAR">💵 USD (Paralelo)</option>
-            <option value="BS">🇻🇪 Bolívares</option>
-          </select>
-        </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#667eea">
+  <meta name="description" content="Conversor de monedas venezolanas con tasas en tiempo real - VenezuelaCambio Pro">
+  
+  <title>VenezuelaCambio Pro - LUAN System™</title>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo">
+        <i class="fas fa-exchange-alt"></i>
       </div>
-
-      <!-- Botón convertir -->
-      <button id="convertBtn" class="btn btn-primary">
-        <span class="btn-text">Convertir</span>
-        <span class="btn-icon">💱</span>
+      <div>
+        <h1>VenezuelaCambio Pro</h1>
+        <div class="sub">by LUAN System™ · Enhanced Edition</div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" title="Cambiar tema">
+        <i class="fas fa-moon"></i>
       </button>
+      <button class="icon-btn" id="turboToggle" title="Modo Turbo">
+        <i class="fas fa-bolt"></i>
+      </button>
+      <button class="icon-btn" id="soundToggle" title="Sonidos">
+        <i class="fas fa-volume-up"></i>
+      </button>
+      <button class="icon-btn" id="achievementsBtn" title="Logros">
+        <i class="fas fa-trophy"></i>
+      </button>
+      <button class="icon-btn" id="statsBtn" title="Estadísticas">
+        <i class="fas fa-chart-bar"></i>
+      </button>
+    </div>
+  </header>
 
-      <!-- Resultado -->
-      <div id="result" class="result hidden">
-        <div class="result-label">Resultado:</div>
-        <div class="result-value">0.00</div>
-        <button id="copyBtn" class="btn-copy" title="Copiar resultado">
-          📋 Copiar
+  <div class="container">
+    
+    <!-- STATUS BAR -->
+    <div class="status-bar glass-card">
+      <div class="status-info">
+        <i class="fas fa-signal"></i>
+        <span id="statusMsg">Cargando tasas...</span>
+      </div>
+      <div class="status-actions">
+        <button class="small-btn" id="btnRefresh">
+          <i class="fas fa-sync-alt"></i> Actualizar
         </button>
-      </div>
-    </div>
-
-    <!-- Tasas actuales -->
-    <div class="card rates-card">
-      <div class="card-header">
-        <h3>Tasas Actuales</h3>
-        <span id="lastUpdate" class="update-time">Cargando...</span>
-      </div>
-      <div class="rates-grid">
-        <div class="rate-item">
-          <span class="rate-label">🇺🇸 USD (BCV)</span>
-          <span id="usdRate" class="rate-value">--</span>
-        </div>
-        <div class="rate-item">
-          <span class="rate-label">🇪🇺 EUR</span>
-          <span id="eurRate" class="rate-value">--</span>
-        </div>
-        <div class="rate-item">
-          <span class="rate-label">💵 USD (Paralelo)</span>
-          <span id="parRate" class="rate-value">--</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Override manual -->
-    <div class="card override-card">
-      <div class="card-header">
-        <h3>Tasas Manuales</h3>
-        <label class="switch">
-          <input type="checkbox" id="manualToggle">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div id="manualInputs" class="manual-inputs hidden">
-        <div class="input-group">
-          <label for="usdManual">USD (BCV)</label>
-          <input type="number" id="usdManual" placeholder="Ej: 56.50" step="0.01">
-        </div>
-        <div class="input-group">
-          <label for="eurManual">EUR</label>
-          <input type="number" id="eurManual" placeholder="Ej: 61.20" step="0.01">
-        </div>
-        <div class="input-group">
-          <label for="parManual">USD (Paralelo)</label>
-          <input type="number" id="parManual" placeholder="Ej: 58.00" step="0.01">
-        </div>
-        <button id="saveManualBtn" class="btn btn-secondary">
-          Guardar Tasas
+        <button class="small-btn" id="btnReset">
+          <i class="fas fa-redo"></i> Reset
         </button>
+        <select id="decimalPlaces" class="small-select">
+          <option value="2">2 decimales</option>
+          <option value="3">3 decimales</option>
+          <option value="4">4 decimales</option>
+        </select>
       </div>
     </div>
 
-    <!-- Historial -->
-    <div class="card history-card">
-      <div class="card-header">
-        <h3>Historial</h3>
-        <div class="history-actions">
-          <button id="exportBtn" class="icon-btn" title="Exportar CSV">
-            📥 CSV
-          </button>
-          <button id="clearHistoryBtn" class="icon-btn" title="Limpiar historial">
-            🗑️
+    <!-- RATES GRID -->
+    <div class="rates-grid">
+      <!-- USD BCV -->
+      <div class="glass-card rate-card rate-usd">
+        <div class="rate-header">
+          <div class="rate-title">
+            <i class="fas fa-dollar-sign"></i>
+            <span>USD (BCV)</span>
+          </div>
+          <button class="icon-btn" id="usdBcvToggle">
+            <i class="fas fa-edit"></i>
           </button>
         </div>
+        <div class="rate-value" id="usdBcvValue">--</div>
+        <div class="rate-meta" id="usdBcvMeta">Cargando...</div>
+        
+        <div class="edit-rate" id="usdBcvEdit" style="display:none">
+          <input type="number" class="edit-input" id="usdBcvManual" placeholder="Tasa manual">
+          <button class="outline-btn" id="usdBcvSave"><i class="fas fa-save"></i></button>
+          <button class="outline-btn" id="usdBcvUnlock"><i class="fas fa-unlock"></i></button>
+        </div>
       </div>
-      <ul id="historyList" class="history-list">
-        <li class="empty-state">No hay conversiones recientes</li>
-      </ul>
+
+      <!-- EUR -->
+      <div class="glass-card rate-card rate-eur">
+        <div class="rate-header">
+          <div class="rate-title">
+            <i class="fas fa-euro-sign"></i>
+            <span>EUR</span>
+          </div>
+          <button class="icon-btn" id="eurToggle">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+        <div class="rate-value" id="eurValue">--</div>
+        <div class="rate-meta" id="eurMeta">Cargando...</div>
+        
+        <div class="edit-rate" id="eurEdit" style="display:none">
+          <input type="number" class="edit-input" id="eurManual" placeholder="Tasa manual">
+          <button class="outline-btn" id="eurSave"><i class="fas fa-save"></i></button>
+          <button class="outline-btn" id="eurUnlock"><i class="fas fa-unlock"></i></button>
+        </div>
+      </div>
+
+      <!-- USD PARALELO -->
+      <div class="glass-card rate-card rate-par">
+        <div class="rate-header">
+          <div class="rate-title">
+            <i class="fas fa-chart-line"></i>
+            <span>USD Paralelo</span>
+          </div>
+          <button class="icon-btn" id="parToggle">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+        <div class="rate-value" id="parValue">--</div>
+        <div class="rate-meta" id="parMeta">Cargando...</div>
+        
+        <div class="edit-rate" id="parEdit" style="display:none">
+          <input type="number" class="edit-input" id="parManual" placeholder="Tasa manual">
+          <button class="outline-btn" id="parSave"><i class="fas fa-save"></i></button>
+          <button class="outline-btn" id="parUnlock"><i class="fas fa-unlock"></i></button>
+        </div>
+      </div>
+
+      <!-- TENDENCIAS -->
+      <div class="glass-card rate-card rate-trend">
+        <div class="rate-title">
+          <i class="fas fa-chart-area"></i>
+          <span>Tendencia 24h</span>
+        </div>
+        <canvas id="trendChart" height="80"></canvas>
+      </div>
     </div>
 
-  </main>
+    <!-- MAIN CALCULATOR -->
+    <div class="calc-grid">
+      
+      <!-- LEFT PANEL: CONVERTER -->
+      <div class="glass-card panel">
+        <h2 class="panel-title">
+          <i class="fas fa-calculator"></i>
+          Convertidor Principal
+        </h2>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>
-      <strong>Made with 🔥 by LUANSysten™</strong><br>
-      <span class="footer-text">El conversor más épico de Venezuela</span>
-    </p>
-  </footer>
+        <div class="input-group">
+          <label for="amountFrom">Cantidad a Convertir</label>
+          <input type="number" id="amountFrom" placeholder="0.00" step="0.01">
+        </div>
 
-  <!-- Modal de fallback manual -->
-  <div id="fallbackModal" class="modal hidden">
-    <div class="modal-content">
+        <div class="currency-selectors">
+          <div class="input-group">
+            <label for="currencyFrom">Desde</label>
+            <select id="currencyFrom">
+              <option value="bs">Bolívares (Bs)</option>
+              <option value="usd">USD (BCV)</option>
+              <option value="eur">EUR</option>
+              <option value="par">USD Paralelo</option>
+            </select>
+          </div>
+
+          <button class="swap-btn" id="swapBtn" title="Intercambiar">
+            <i class="fas fa-exchange-alt"></i>
+          </button>
+
+          <div class="input-group">
+            <label for="currencyTo">Hacia</label>
+            <select id="currencyTo">
+              <option value="usd">USD (BCV)</option>
+              <option value="bs">Bolívares (Bs)</option>
+              <option value="eur">EUR</option>
+              <option value="par">USD Paralelo</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- QUICK BUTTONS -->
+        <div class="quick-actions">
+          <button class="quick-btn" id="quick10">+10</button>
+          <button class="quick-btn" id="quick50">+50</button>
+          <button class="quick-btn" id="quick100">+100</button>
+          <button class="quick-btn" id="quick500">+500</button>
+          <button class="quick-btn danger" id="clearBtn">
+            <i class="fas fa-times"></i> Limpiar
+          </button>
+        </div>
+
+        <!-- RESULT -->
+        <div class="result-box">
+          <div class="tiny">Resultado</div>
+          <div class="result-amount" id="resultDisplay">--</div>
+          <div class="result-detail" id="resultDetail">—</div>
+          <button class="outline-btn mt-2" id="copyResult">
+            <i class="fas fa-copy"></i> Copiar
+          </button>
+          <button class="outline-btn mt-2" id="shareResult">
+            <i class="fas fa-share-alt"></i> Compartir
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: HISTORY -->
+      <div class="glass-card panel">
+        <div class="panel-header">
+          <h2 class="panel-title">
+            <i class="fas fa-history"></i>
+            Historial de Conversiones
+          </h2>
+          <button class="outline-btn" id="exportHistory">
+            <i class="fas fa-download"></i> Exportar
+          </button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOM RATE CALCULATOR -->
+    <div class="glass-card custom-section">
+      <h2 class="panel-title">
+        <i class="fas fa-handshake"></i>
+        Calculadora Personalizada (Compra/Venta)
+      </h2>
+      <p class="custom-description">
+        Define tu propia tasa de cambio para negociaciones persona a persona
+      </p>
+
+      <div class="custom-grid">
+        <div class="input-group">
+          <label for="customRate">Tasa Personalizada (Bs por USD)</label>
+          <input type="number" id="customRate" class="input-custom" placeholder="Ej: 51.50" step="0.01">
+        </div>
+
+        <div class="input-group">
+          <label for="customUsdAmount">Cantidad en USD</label>
+          <input type="number" id="customUsdAmount" class="input-custom" placeholder="Ej: 100" step="0.01">
+        </div>
+      </div>
+
+      <div class="center-actions">
+        <button class="big-btn" id="customCalc">
+          <i class="fas fa-calculator"></i> Calcular
+        </button>
+        <button class="outline-btn" id="customClear">
+          <i class="fas fa-eraser"></i> Limpiar
+        </button>
+      </div>
+
+      <div class="result-box mt-3">
+        <div class="tiny">Total en Bolívares</div>
+        <div class="result-amount custom-result" id="customResult">--</div>
+        <div class="result-detail" id="customDetail">—</div>
+        <div class="tiny mt-2">Tasa aplicada: <span id="customRateValue">--</span></div>
+      </div>
+
+      <!-- CUSTOM HISTORY -->
+      <div class="mt-3">
+        <h3 class="panel-subtitle">Historial Personalizado</h3>
+        <div class="history-list" id="customHistory"></div>
+      </div>
+    </div>
+
+    <!-- COMPARADOR DE TASAS -->
+    <div class="glass-card">
+      <h2 class="panel-title">
+        <i class="fas fa-balance-scale"></i>
+        Comparador de Tasas
+      </h2>
+      <div class="comparator-grid">
+        <div class="comparator-item">
+          <div class="comparator-label">Para 1 USD obtienes:</div>
+          <div class="comparator-value" id="comp1Usd">-- Bs</div>
+        </div>
+        <div class="comparator-item">
+          <div class="comparator-label">Para 100 USD obtienes:</div>
+          <div class="comparator-value" id="comp100Usd">-- Bs</div>
+        </div>
+        <div class="comparator-item">
+          <div class="comparator-label">Diferencia BCV vs Paralelo:</div>
+          <div class="comparator-value" id="compDiff">-- Bs</div>
+        </div>
+        <div class="comparator-item">
+          <div class="comparator-label">Mejor tasa actual:</div>
+          <div class="comparator-value" id="compBest">--</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODALS -->
+  
+  <!-- Stats Modal -->
+  <div class="modal" id="statsModal">
+    <div class="modal-content glass-card">
       <div class="modal-header">
-        <h3>⚠️ APIs No Disponibles</h3>
-        <p>Las APIs de tasas no están respondiendo. Ingresa las tasas manualmente para continuar:</p>
+        <h2><i class="fas fa-chart-pie"></i> Tus Estadísticas</h2>
+        <button class="modal-close" id="statsClose">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="input-group">
-          <label for="fallbackUSD">Tasa USD (BCV)</label>
-          <input type="number" id="fallbackUSD" placeholder="Ej: 56.50" step="0.01" required>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <i class="fas fa-sync-alt stat-icon"></i>
+            <div class="stat-value" id="statConversions">0</div>
+            <div class="stat-label">Conversiones Totales</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-coins stat-icon"></i>
+            <div class="stat-value" id="statTotalBs">0 Bs</div>
+            <div class="stat-label">Total Convertido (Bs)</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-dollar-sign stat-icon"></i>
+            <div class="stat-value" id="statTotalUsd">0 USD</div>
+            <div class="stat-label">Total Convertido (USD)</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-star stat-icon"></i>
+            <div class="stat-value" id="statFavorite">--</div>
+            <div class="stat-label">Conversión Favorita</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-calendar-day stat-icon"></i>
+            <div class="stat-value" id="statDays">0</div>
+            <div class="stat-label">Días Usando la App</div>
+          </div>
+          <div class="stat-card">
+            <i class="fas fa-fire stat-icon"></i>
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-label">Racha Actual</div>
+          </div>
         </div>
-        <div class="input-group">
-          <label for="fallbackEUR">Tasa EUR</label>
-          <input type="number" id="fallbackEUR" placeholder="Ej: 61.20" step="0.01" required>
+        
+        <div class="mt-4">
+          <h3>Historial de Uso</h3>
+          <canvas id="usageChart"></canvas>
         </div>
-        <div class="input-group">
-          <label for="fallbackPAR">Tasa USD Paralelo</label>
-          <input type="number" id="fallbackPAR" placeholder="Ej: 58.00" step="0.01" required>
+
+        <div class="mt-4 center-actions">
+          <button class="outline-btn" id="backupBtn">
+            <i class="fas fa-cloud-upload-alt"></i> Generar Backup (QR)
+          </button>
+          <button class="outline-btn" id="restoreBtn">
+            <i class="fas fa-cloud-download-alt"></i> Restaurar
+          </button>
         </div>
+
+        <div id="qrContainer" class="mt-3" style="display:none;text-align:center;"></div>
       </div>
-      <div class="modal-footer">
-        <button id="saveFallbackBtn" class="btn btn-primary">
-          Guardar y Continuar
-        </button>
+    </div>
+  </div>
+
+  <!-- Achievements Modal -->
+  <div class="modal" id="achievementsModal">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2><i class="fas fa-trophy"></i> Logros Desbloqueados</h2>
+        <button class="modal-close" id="achievementsClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="achievements-grid" id="achievementsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Achievement Toast -->
+  <div class="achievement-toast" id="achievementToast">
+    <div class="achievement-content">
+      <i class="fas fa-trophy achievement-icon"></i>
+      <div>
+        <div class="achievement-title">¡Logro Desbloqueado!</div>
+        <div class="achievement-desc" id="achievementDesc"></div>
       </div>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="app.js"></script>
+  
+  <!-- PWA Install -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('✅ Service Worker registrado'))
+        .catch(err => console.error('❌ SW error:', err));
+    }
+  </script>
 </body>
 </html>
-<!-- redeploy -->
