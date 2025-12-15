@@ -3,6 +3,143 @@
    By LUAN System™ - Enhanced Edition
    ============================================ */
 
+// ============ PROTECCIÓN ANTI-CLONACIÓN ============
+(function() {
+  'use strict';
+  
+  // MARCA DE AGUA EN CONSOLA
+  console.log('%c🚫 PROPIEDAD DE LUIS ARICHUNA - LUAN SYSTEM™', 
+    'color: #ff4444; font-size: 24px; font-weight: bold; text-shadow: 2px 2px 4px #000; padding: 10px;');
+  console.log('%c⚠️ Este código es privado. Uso no autorizado está prohibido.', 
+    'color: #ff9800; font-size: 16px; font-weight: bold; padding: 5px;');
+  console.log('%c📧 Contacto: Luis Arichuna - LUAN System™', 
+    'color: #ffd700; font-size: 14px; padding: 5px;');
+  console.log('%c🇻🇪 Desarrollado en Arichuna, Venezuela', 
+    'color: #4caf50; font-size: 14px; padding: 5px;');
+  console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 
+    'color: #666;');
+  
+  // VALIDACIÓN DE DOMINIO - SOLO TU DOMINIO PERMITIDO
+  const DOMINIOS_AUTORIZADOS = [
+    'luisla425.github.io',
+    'localhost',
+    '127.0.0.1'
+  ];
+  
+  const dominioActual = window.location.hostname;
+  const esAutorizado = DOMINIOS_AUTORIZADOS.some(dominio => 
+    dominioActual === dominio || dominioActual.includes(dominio)
+  );
+  
+  if (!esAutorizado) {
+    // BLOQUEAR APLICACIÓN
+    document.body.innerHTML = `
+      <div style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        color: white;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        margin: 0;
+      ">
+        <div style="max-width: 700px; animation: fadeIn 0.5s ease;">
+          <div style="font-size: 120px; margin-bottom: 30px; animation: pulse 2s infinite;">🚫</div>
+          
+          <h1 style="
+            font-size: 48px;
+            margin: 20px 0;
+            color: #ff4444;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255,68,68,0.5);
+          ">
+            ACCESO NO AUTORIZADO
+          </h1>
+          
+          <p style="font-size: 20px; margin: 30px 0; color: #e0e0e0; line-height: 1.6;">
+            Esta aplicación es <strong>propiedad privada</strong> y su uso requiere autorización.
+          </p>
+          
+          <div style="
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            border: 2px solid rgba(255,215,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+          ">
+            <div style="font-size: 32px; font-weight: bold; color: #ffd700; margin-bottom: 15px;">
+              ⚡ LUAN SYSTEM™
+            </div>
+            <div style="font-size: 20px; color: #fff; margin-bottom: 10px;">
+              Luis Arichuna
+            </div>
+            <div style="font-size: 14px; color: #888; margin-top: 20px;">
+              🇻🇪 Desarrollador venezolano • Arichuna
+            </div>
+          </div>
+          
+          <div style="
+            background: rgba(255,68,68,0.1);
+            border-left: 4px solid #ff4444;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: left;
+          ">
+            <div style="font-weight: bold; margin-bottom: 10px; color: #ff4444;">
+              ⚠️ Información del intento:
+            </div>
+            <div style="font-family: 'Courier New', monospace; font-size: 14px; color: #ccc;">
+              • Dominio detectado: <strong style="color: #fff;">${dominioActual}</strong><br>
+              • Fecha: <strong style="color: #fff;">${new Date().toLocaleString('es-VE')}</strong><br>
+              • Estado: <strong style="color: #ff4444;">BLOQUEADO</strong>
+            </div>
+          </div>
+          
+          <p style="font-size: 16px; color: #999; margin-top: 40px; line-height: 1.6;">
+            Si necesitas usar esta aplicación, contacta al propietario para solicitar autorización.
+          </p>
+          
+          <div style="
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+            color: #666;
+          ">
+            © ${new Date().getFullYear()} LUAN System™ - Todos los derechos reservados<br>
+            Desarrollado con ❤️ en Venezuela 🇻🇪
+          </div>
+        </div>
+      </div>
+      
+      <style>
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+        }
+        body { margin: 0; overflow-x: hidden; }
+      </style>
+    `;
+    
+    // Prevenir ejecución adicional
+    throw new Error('🚫 Dominio no autorizado: ' + dominioActual);
+  }
+  
+  // Si llegó aquí, el dominio es válido
+  console.log('%c✅ Dominio autorizado: ' + dominioActual, 
+    'color: #4caf50; font-size: 14px; font-weight: bold;');
+})();
+
 // ============ CONFIGURATION ============
 const CONFIG = {
   API_DOLARES: 'https://ve.dolarapi.com/v1/dolares',
