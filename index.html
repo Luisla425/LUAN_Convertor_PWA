@@ -1,412 +1,503 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#667eea">
-  <meta name="description" content="Conversor de monedas venezolanas con tasas en tiempo real - VenezuelaCambio Pro">
-  
-  <title>ARICHUNACambio Pro - LUAN System™</title>
-  
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
-  
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css">
-  
-  <!-- External Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Epic Converter - Convertidor de monedas para Venezuela">
+    <title>Epic Converter - EUR & USD</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+        }
+
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #a8dadc;
+            font-size: 0.9rem;
+        }
+
+        .rates-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .rate-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .rate-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .rate-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .currency-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .currency-icon {
+            font-size: 2rem;
+        }
+
+        .currency-name {
+            font-weight: 600;
+            color: #ffd700;
+        }
+
+        .currency-label {
+            font-size: 0.85rem;
+            color: #a8dadc;
+        }
+
+        .rate-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4ecca3;
+        }
+
+        .converter-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #a8dadc;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .result-display {
+            background: linear-gradient(135deg, #4ecca3 0%, #3eb489 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(78, 204, 163, 0.3);
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .update-info {
+            text-align: center;
+            color: #a8dadc;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #ffd700;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #ffd700;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #a8dadc;
+            font-size: 0.85rem;
+        }
+
+        .brand {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .rate-value {
+                font-size: 1.2rem;
+            }
+
+            .result-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  
-  <!-- HEADER -->
-  <header class="app-header">
-    <div class="brand">
-      <div class="logo">
-        <i class="fas fa-exchange-alt"></i>
-      </div>
-      <div>
-        <h1>ARICHUNACambio Pro</h1>
-        <div class="sub">by LUAN System™ · Enhanced Edition</div>
-      </div>
-    </div>
-    
-    <div class="header-actions">
-      <button class="icon-btn" id="themeToggle" title="Cambiar tema">
-        <i class="fas fa-moon"></i>
-      </button>
-      <button class="icon-btn" id="turboToggle" title="Modo Turbo">
-        <i class="fas fa-bolt"></i>
-      </button>
-      <button class="icon-btn" id="soundToggle" title="Sonidos">
-        <i class="fas fa-volume-up"></i>
-      </button>
-      <button class="icon-btn" id="achievementsBtn" title="Logros">
-        <i class="fas fa-trophy"></i>
-      </button>
-      <button class="icon-btn" id="statsBtn" title="Estadísticas">
-        <i class="fas fa-chart-bar"></i>
-      </button>
-    </div>
-  </header>
+    <div class="container">
+        <header class="header">
+            <div class="logo">💱</div>
+            <h1>Epic Converter</h1>
+            <p class="subtitle">EUR & USD - Tasas Oficiales</p>
+        </header>
 
-  <div class="container">
-    
-    <!-- STATUS BAR -->
-    <div class="status-bar glass-card">
-      <div class="status-info">
-        <i class="fas fa-signal"></i>
-        <span id="statusMsg">Cargando tasas...</span>
-      </div>
-      <div class="status-actions">
-        <button class="small-btn" id="btnRefresh">
-          <i class="fas fa-sync-alt"></i> Actualizar
-        </button>
-        <button class="small-btn" id="btnReset">
-          <i class="fas fa-redo"></i> Reset
-        </button>
-        <select id="decimalPlaces" class="small-select">
-          <option value="2">2 decimales</option>
-          <option value="3">3 decimales</option>
-          <option value="4">4 decimales</option>
-        </select>
-      </div>
-    </div>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Cargando tasas oficiales...</p>
+        </div>
 
-    <!-- RATES GRID -->
-    <div class="rates-grid">
-      <!-- USD BCV -->
-      <div class="glass-card rate-card rate-usd">
-        <div class="rate-header">
-          <div class="rate-title">
-            <i class="fas fa-dollar-sign"></i>
-            <span>USD (BCV)</span>
-          </div>
-          <button class="icon-btn" id="usdBcvToggle">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-        <div class="rate-value" id="usdBcvValue">--</div>
-        <div class="rate-meta" id="usdBcvMeta">Cargando...</div>
-        
-        <div class="edit-rate" id="usdBcvEdit" style="display:none">
-          <input type="number" class="edit-input" id="usdBcvManual" placeholder="Tasa manual">
-          <button class="outline-btn" id="usdBcvSave"><i class="fas fa-save"></i></button>
-          <button class="outline-btn" id="usdBcvUnlock"><i class="fas fa-unlock"></i></button>
-        </div>
-      </div>
+        <div id="mainContent" style="display: none;">
+            <div class="rates-container">
+                <h2 style="margin-bottom: 20px; font-size: 1.3rem;">📊 Tasas del Día</h2>
+                
+                <div class="rate-item">
+                    <div class="currency-info">
+                        <div class="currency-icon">💶</div>
+                        <div>
+                            <div class="currency-name">EUR</div>
+                            <div class="currency-label">Euro</div>
+                        </div>
+                    </div>
+                    <div class="rate-value" id="eurRate">-</div>
+                </div>
 
-      <!-- EUR -->
-      <div class="glass-card rate-card rate-eur">
-        <div class="rate-header">
-          <div class="rate-title">
-            <i class="fas fa-euro-sign"></i>
-            <span>EUR</span>
-          </div>
-          <button class="icon-btn" id="eurToggle">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-        <div class="rate-value" id="eurValue">--</div>
-        <div class="rate-meta" id="eurMeta">Cargando...</div>
-        
-        <div class="edit-rate" id="eurEdit" style="display:none">
-          <input type="number" class="edit-input" id="eurManual" placeholder="Tasa manual">
-          <button class="outline-btn" id="eurSave"><i class="fas fa-save"></i></button>
-          <button class="outline-btn" id="eurUnlock"><i class="fas fa-unlock"></i></button>
-        </div>
-      </div>
+                <div class="rate-item">
+                    <div class="currency-info">
+                        <div class="currency-icon">💵</div>
+                        <div>
+                            <div class="currency-name">USD</div>
+                            <div class="currency-label">Dólar Oficial BCV</div>
+                        </div>
+                    </div>
+                    <div class="rate-value" id="usdRate">-</div>
+                </div>
+            </div>
 
-      <!-- USD PARALELO -->
-      <div class="glass-card rate-card rate-par">
-        <div class="rate-header">
-          <div class="rate-title">
-            <i class="fas fa-chart-line"></i>
-            <span>USD Paralelo</span>
-          </div>
-          <button class="icon-btn" id="parToggle">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-        <div class="rate-value" id="parValue">--</div>
-        <div class="rate-meta" id="parMeta">Cargando...</div>
-        
-        <div class="edit-rate" id="parEdit" style="display:none">
-          <input type="number" class="edit-input" id="parManual" placeholder="Tasa manual">
-          <button class="outline-btn" id="parSave"><i class="fas fa-save"></i></button>
-          <button class="outline-btn" id="parUnlock"><i class="fas fa-unlock"></i></button>
-        </div>
-      </div>
+            <div class="converter-card">
+                <h2 style="margin-bottom: 20px; font-size: 1.3rem;">🔄 Convertidor</h2>
+                
+                <div class="input-group">
+                    <label for="amount">Monto</label>
+                    <input type="number" id="amount" placeholder="Ingresa el monto" step="0.01" min="0">
+                </div>
 
-      <!-- TENDENCIAS -->
-      <div class="glass-card rate-card rate-trend">
-        <div class="rate-title">
-          <i class="fas fa-chart-area"></i>
-          <span>Tendencia 24h</span>
+                <div class="input-group">
+                    <label for="fromCurrency">De</label>
+                    <select id="fromCurrency">
+                        <option value="VES">🇻🇪 Bolívares (Bs)</option>
+                        <option value="USD">💵 Dólares (USD)</option>
+                        <option value="EUR">💶 Euros (EUR)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="toCurrency">A</label>
+                    <select id="toCurrency">
+                        <option value="USD">💵 Dólares (USD)</option>
+                        <option value="VES">🇻🇪 Bolívares (Bs)</option>
+                        <option value="EUR">💶 Euros (EUR)</option>
+                    </select>
+                </div>
+
+                <div id="result" class="result-display" style="display: none;">
+                    <div class="result-label">Resultado</div>
+                    <div class="result-value" id="resultValue">0.00</div>
+                </div>
+            </div>
+
+            <div class="update-info" id="updateInfo">
+                Última actualización: Cargando...
+            </div>
         </div>
-        <canvas id="trendChart" height="80"></canvas>
-      </div>
+
+        <footer class="footer">
+            <p>Powered by <span class="brand">LUANSystem™</span></p>
+            <p style="margin-top: 5px; font-size: 0.75rem;">Tasas oficiales • BCV & BCE</p>
+        </footer>
     </div>
 
-    <!-- MAIN CALCULATOR -->
-    <div class="calc-grid">
-      
-      <!-- LEFT PANEL: CONVERTER -->
-      <div class="glass-card panel">
-        <h2 class="panel-title">
-          <i class="fas fa-calculator"></i>
-          Convertidor Principal
-        </h2>
+    <script>
+        let rates = {
+            USD: 0,
+            EUR: 0
+        };
 
-        <div class="input-group">
-          <label for="amountFrom">Cantidad a Convertir</label>
-          <input type="number" id="amountFrom" placeholder="0.00" step="0.01">
-        </div>
+        let lastUpdate = null;
 
-        <div class="currency-selectors">
-          <div class="input-group">
-            <label for="currencyFrom">Desde</label>
-            <select id="currencyFrom">
-              <option value="bs">Bolívares (Bs)</option>
-              <option value="usd">USD (BCV)</option>
-              <option value="eur">EUR</option>
-              <option value="par">USD Paralelo</option>
-            </select>
-          </div>
+        // Cargar tasas al iniciar
+        async function loadRates() {
+            try {
+                // Cargar USD desde BCV
+                const bcvResponse = await fetch('https://pydolarve.org/api/v1/dollar?page=bcv');
+                const bcvData = await bcvResponse.json();
+                rates.USD = parseFloat(bcvData.monitors.bcv.price);
 
-          <button class="swap-btn" id="swapBtn" title="Intercambiar">
-            <i class="fas fa-exchange-alt"></i>
-          </button>
+                // Cargar EUR desde BCE
+                const eurResponse = await fetch('https://pydolarve.org/api/v1/euro?page=bcv');
+                const eurData = await eurResponse.json();
+                rates.EUR = parseFloat(eurData.monitors.bcv.price);
 
-          <div class="input-group">
-            <label for="currencyTo">Hacia</label>
-            <select id="currencyTo">
-              <option value="usd">USD (BCV)</option>
-              <option value="bs">Bolívares (Bs)</option>
-              <option value="eur">EUR</option>
-              <option value="par">USD Paralelo</option>
-            </select>
-          </div>
-        </div>
+                lastUpdate = new Date();
+                updateDisplay();
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } catch (error) {
+                console.error('Error cargando tasas:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="error">
+                        ⚠️ Error al cargar las tasas<br>
+                        <small>Por favor, verifica tu conexión e intenta nuevamente</small>
+                    </div>
+                `;
+            }
+        }
 
-        <!-- QUICK BUTTONS -->
-        <div class="quick-actions">
-          <button class="quick-btn" id="quick10">+10</button>
-          <button class="quick-btn" id="quick50">+50</button>
-          <button class="quick-btn" id="quick100">+100</button>
-          <button class="quick-btn" id="quick500">+500</button>
-          <button class="quick-btn danger" id="clearBtn">
-            <i class="fas fa-times"></i> Limpiar
-          </button>
-        </div>
+        function updateDisplay() {
+            document.getElementById('usdRate').textContent = formatCurrency(rates.USD, 'Bs');
+            document.getElementById('eurRate').textContent = formatCurrency(rates.EUR, 'Bs');
+            
+            if (lastUpdate) {
+                const timeStr = lastUpdate.toLocaleTimeString('es-VE', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                const dateStr = lastUpdate.toLocaleDateString('es-VE', { 
+                    day: '2-digit', 
+                    month: 'short' 
+                });
+                document.getElementById('updateInfo').textContent = 
+                    `Última actualización: ${dateStr} a las ${timeStr}`;
+            }
+        }
 
-        <!-- RESULT -->
-        <div class="result-box">
-          <div class="tiny">Resultado</div>
-          <div class="result-amount" id="resultDisplay">--</div>
-          <div class="result-detail" id="resultDetail">—</div>
-          <button class="outline-btn mt-2" id="copyResult">
-            <i class="fas fa-copy"></i> Copiar
-          </button>
-          <button class="outline-btn mt-2" id="shareResult">
-            <i class="fas fa-share-alt"></i> Compartir
-          </button>
-        </div>
-      </div>
+        function formatCurrency(value, currency = '') {
+            const formatted = new Intl.NumberFormat('es-VE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+            return currency ? `${currency} ${formatted}` : formatted;
+        }
 
-      <!-- RIGHT PANEL: HISTORY -->
-      <div class="glass-card panel">
-        <div class="panel-header">
-          <h2 class="panel-title">
-            <i class="fas fa-history"></i>
-            Historial de Conversiones
-          </h2>
-          <button class="outline-btn" id="exportHistory">
-            <i class="fas fa-download"></i> Exportar
-          </button>
-        </div>
-        <div class="history-list" id="historyList"></div>
-      </div>
-    </div>
+        function convert() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const fromCurrency = document.getElementById('fromCurrency').value;
+            const toCurrency = document.getElementById('toCurrency').value;
+            const resultDiv = document.getElementById('result');
+            const resultValue = document.getElementById('resultValue');
 
-    <!-- CUSTOM RATE CALCULATOR -->
-    <div class="glass-card custom-section">
-      <h2 class="panel-title">
-        <i class="fas fa-handshake"></i>
-        Calculadora Personalizada (Compra/Venta)
-      </h2>
-      <p class="custom-description">
-        Define tu propia tasa de cambio para negociaciones persona a persona
-      </p>
+            if (isNaN(amount) || amount <= 0) {
+                resultDiv.style.display = 'none';
+                return;
+            }
 
-      <div class="custom-grid">
-        <div class="input-group">
-          <label for="customRate">Tasa Personalizada (Bs por USD)</label>
-          <input type="number" id="customRate" class="input-custom" placeholder="Ej: 51.50" step="0.01">
-        </div>
+            if (fromCurrency === toCurrency) {
+                resultValue.textContent = formatCurrency(amount, getCurrencySymbol(toCurrency));
+                resultDiv.style.display = 'block';
+                return;
+            }
 
-        <div class="input-group">
-          <label for="customUsdAmount">Cantidad en USD</label>
-          <input type="number" id="customUsdAmount" class="input-custom" placeholder="Ej: 100" step="0.01">
-        </div>
-      </div>
+            let result = 0;
 
-      <div class="center-actions">
-        <button class="big-btn" id="customCalc">
-          <i class="fas fa-calculator"></i> Calcular
-        </button>
-        <button class="outline-btn" id="customClear">
-          <i class="fas fa-eraser"></i> Limpiar
-        </button>
-      </div>
+            // Conversiones
+            if (fromCurrency === 'VES') {
+                if (toCurrency === 'USD') {
+                    result = amount / rates.USD;
+                } else if (toCurrency === 'EUR') {
+                    result = amount / rates.EUR;
+                }
+            } else if (fromCurrency === 'USD') {
+                if (toCurrency === 'VES') {
+                    result = amount * rates.USD;
+                } else if (toCurrency === 'EUR') {
+                    result = (amount * rates.USD) / rates.EUR;
+                }
+            } else if (fromCurrency === 'EUR') {
+                if (toCurrency === 'VES') {
+                    result = amount * rates.EUR;
+                } else if (toCurrency === 'USD') {
+                    result = (amount * rates.EUR) / rates.USD;
+                }
+            }
 
-      <div class="result-box mt-3">
-        <div class="tiny">Total en Bolívares</div>
-        <div class="result-amount custom-result" id="customResult">--</div>
-        <div class="result-detail" id="customDetail">—</div>
-        <div class="tiny mt-2">Tasa aplicada: <span id="customRateValue">--</span></div>
-      </div>
+            resultValue.textContent = formatCurrency(result, getCurrencySymbol(toCurrency));
+            resultDiv.style.display = 'block';
+        }
 
-      <!-- CUSTOM HISTORY -->
-      <div class="mt-3">
-        <h3 class="panel-subtitle">Historial Personalizado</h3>
-        <div class="history-list" id="customHistory"></div>
-      </div>
-    </div>
+        function getCurrencySymbol(currency) {
+            const symbols = {
+                'VES': 'Bs',
+                'USD': '$',
+                'EUR': '€'
+            };
+            return symbols[currency] || '';
+        }
 
-    <!-- COMPARADOR DE TASAS -->
-    <div class="glass-card">
-      <h2 class="panel-title">
-        <i class="fas fa-balance-scale"></i>
-        Comparador de Tasas
-      </h2>
-      <div class="comparator-grid">
-        <div class="comparator-item">
-          <div class="comparator-label">Para 1 USD obtienes:</div>
-          <div class="comparator-value" id="comp1Usd">-- Bs</div>
-        </div>
-        <div class="comparator-item">
-          <div class="comparator-label">Para 100 USD obtienes:</div>
-          <div class="comparator-value" id="comp100Usd">-- Bs</div>
-        </div>
-        <div class="comparator-item">
-          <div class="comparator-label">Diferencia BCV vs Paralelo:</div>
-          <div class="comparator-value" id="compDiff">-- Bs</div>
-        </div>
-        <div class="comparator-item">
-          <div class="comparator-label">Mejor tasa actual:</div>
-          <div class="comparator-value" id="compBest">--</div>
-        </div>
-      </div>
-    </div>
+        // Event Listeners
+        document.getElementById('amount').addEventListener('input', convert);
+        document.getElementById('fromCurrency').addEventListener('change', convert);
+        document.getElementById('toCurrency').addEventListener('change', convert);
 
-  </div>
+        // Cargar tasas al iniciar
+        loadRates();
 
-  <!-- MODALS -->
-  
-  <!-- Stats Modal -->
-  <div class="modal" id="statsModal">
-    <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h2><i class="fas fa-chart-pie"></i> Tus Estadísticas</h2>
-        <button class="modal-close" id="statsClose">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <i class="fas fa-sync-alt stat-icon"></i>
-            <div class="stat-value" id="statConversions">0</div>
-            <div class="stat-label">Conversiones Totales</div>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-coins stat-icon"></i>
-            <div class="stat-value" id="statTotalBs">0 Bs</div>
-            <div class="stat-label">Total Convertido (Bs)</div>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-dollar-sign stat-icon"></i>
-            <div class="stat-value" id="statTotalUsd">0 USD</div>
-            <div class="stat-label">Total Convertido (USD)</div>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-star stat-icon"></i>
-            <div class="stat-value" id="statFavorite">--</div>
-            <div class="stat-label">Conversión Favorita</div>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-calendar-day stat-icon"></i>
-            <div class="stat-value" id="statDays">0</div>
-            <div class="stat-label">Días Usando la App</div>
-          </div>
-          <div class="stat-card">
-            <i class="fas fa-fire stat-icon"></i>
-            <div class="stat-value" id="statStreak">0</div>
-            <div class="stat-label">Racha Actual</div>
-          </div>
-        </div>
-        
-        <div class="mt-4">
-          <h3>Historial de Uso</h3>
-          <canvas id="usageChart"></canvas>
-        </div>
+        // Actualizar tasas cada 5 minutos
+        setInterval(loadRates, 5 * 60 * 1000);
 
-        <div class="mt-4 center-actions">
-          <button class="outline-btn" id="backupBtn">
-            <i class="fas fa-cloud-upload-alt"></i> Generar Backup (QR)
-          </button>
-          <button class="outline-btn" id="restoreBtn">
-            <i class="fas fa-cloud-download-alt"></i> Restaurar
-          </button>
-        </div>
-
-        <div id="qrContainer" class="mt-3" style="display:none;text-align:center;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Achievements Modal -->
-  <div class="modal" id="achievementsModal">
-    <div class="modal-content glass-card">
-      <div class="modal-header">
-        <h2><i class="fas fa-trophy"></i> Logros Desbloqueados</h2>
-        <button class="modal-close" id="achievementsClose">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="achievements-grid" id="achievementsList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Achievement Toast -->
-  <div class="achievement-toast" id="achievementToast">
-    <div class="achievement-content">
-      <i class="fas fa-trophy achievement-icon"></i>
-      <div>
-        <div class="achievement-title">¡Logro Desbloqueado!</div>
-        <div class="achievement-desc" id="achievementDesc"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="app.js"></script>
-  
-  <!-- PWA Install -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(reg => console.log('✅ Service Worker registrado'))
-        .catch(err => console.error('❌ SW error:', err));
-    }
-  </script>
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registrado'))
+                    .catch(err => console.log('Error al registrar SW:', err));
+            });
+        }
+    </script>
 </body>
 </html>
